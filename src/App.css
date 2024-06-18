@@ -88,3 +88,64 @@ a {
 a:hover {
   text-decoration: underline;
 }
+@media (max-width: 768px) {
+  h2 {
+      font-size: 1.5em;
+  }
+
+  button {
+      width: 100%;
+      margin: 10px 0;
+  }
+
+  th, td {
+      padding: 8px;
+  }
+}
+
+/* Media Queries for mobile devices */
+@media (max-width: 480px) {
+  h2 {
+      font-size: 1.2em;
+  }
+
+  button {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+  }
+
+  .container {
+      width: 100%;
+      padding: 0 10px;
+  }
+
+  table, thead, tbody, th, td, tr {
+      display: block;
+  }
+
+  thead tr {
+      display: none;
+  }
+
+  tr {
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+  }
+
+  td {
+      border: none;
+      padding: 10px;
+      position: relative;
+      padding-left: 50%;
+  }
+
+  td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 10px;
+      width: calc(50% - 20px);
+      white-space: nowrap;
+      font-weight: bold;
+  }
+}
