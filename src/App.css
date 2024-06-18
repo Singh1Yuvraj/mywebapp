@@ -1,4 +1,4 @@
-/* src/App.css */
+
 body {
   font-family: Arial, sans-serif;
 }
@@ -64,7 +64,7 @@ input {
 
 button {
   padding: 10px;
-  background-color: #007bff;
+  background-color: #040506;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -73,7 +73,7 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #5d7085;
 }
 
 p {
