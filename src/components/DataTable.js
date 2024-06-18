@@ -1,72 +1,82 @@
-// src/components/DataTable.js
 import React, { useState } from 'react';
 
-const DataTable = ({ data, setData }) => {
-    const [filter, setFilter] = useState('');
-    const [sortField, setSortField] = useState('');
-    const [sortOrder, setSortOrder] = useState('asc');
+const DataTable = ({ data, onUpdate, onDelete, onSort }) => {
+    const [editItem, setEditItem] = useState(null);
+    const [formData, setFormData] = useState({ id: '', name: '', category: '', date: '' });
 
-    const handleFilterChange = (e) => {
-        setFilter(e.target.value);
+    const handleEditClick = (item) => {
+        setEditItem(item);
+        setFormData(item);
     };
 
-    const handleSort = (field) => {
-        const order = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
-        setSortField(field);
-        setSortOrder(order);
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
-    const filteredData = data.filter(item =>
-        item.name.toLowerCase().includes(filter.toLowerCase()) ||
-        item.category.toLowerCase().includes(filter.toLowerCase())
-    );
-
-    const sortedData = [...filteredData].sort((a, b) => {
-        if (a[sortField] < b[sortField]) return sortOrder === 'asc' ? -1 : 1;
-        if (a[sortField] > b[sortField]) return sortOrder === 'asc' ? 1 : -1;
-        return 0;
-    });
-
-    const handleDelete = (id) => {
-        setData(data.filter(item => item.id !== id));
-    };
-
-    const handleAdd = () => {
-        const newItem = {
-            id: data.length + 1,
-            name: `Item ${data.length + 1}`,
-            category: `Category ${String.fromCharCode(65 + (data.length % 26))}`,
-            date: new Date().toISOString().split('T')[0]
-        };
-        setData([...data, newItem]);
+    const handleSave = () => {
+        onUpdate(formData);
+        setEditItem(null);
     };
 
     return (
         <div>
-            <input
-                type="text"
-                placeholder="Filter"
-                value={filter}
-                onChange={handleFilterChange}
-            />
-            <button onClick={handleAdd}>Add Item</button>
+            <button onClick={() => onSort('name', true)}>Sort by Name Ascending</button>
+            <button onClick={() => onSort('name', false)}>Sort by Name Descending</button>
+            <button onClick={() => onSort('date', true)}>Sort by Date Ascending</button>
+            <button onClick={() => onSort('date', false)}>Sort by Date Descending</button>
+
             <table>
                 <thead>
                     <tr>
-                        <th onClick={() => handleSort('name')}>Name</th>
-                        <th onClick={() => handleSort('category')}>Category</th>
-                        <th onClick={() => handleSort('date')}>Date</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedData.map(item => (
+                    {data.map((item) => (
                         <tr key={item.id}>
-                            <td>{item.name}</td>
-                            <td>{item.category}</td>
-                            <td>{item.date}</td>
+                            <td>{item.id}</td>
+                            <td>{editItem?.id === item.id ? (
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                />
+                            ) : (
+                                item.name
+                            )}</td>
+                            <td>{editItem?.id === item.id ? (
+                                <input
+                                    type="text"
+                                    name="category"
+                                    value={formData.category}
+                                    onChange={handleChange}
+                                />
+                            ) : (
+                                item.category
+                            )}</td>
+                            <td>{editItem?.id === item.id ? (
+                                <input
+                                    type="date"
+                                    name="date"
+                                    value={formData.date}
+                                    onChange={handleChange}
+                                />
+                            ) : (
+                                item.date
+                            )}</td>
                             <td>
-                                <button onClick={() => handleDelete(item.id)}>Delete</button>
+                                {editItem?.id === item.id ? (
+                                    <button onClick={handleSave}>Save</button>
+                                ) : (
+                                    <button onClick={() => handleEditClick(item)}>Edit</button>
+                                )}
+                                <button onClick={() => onDelete(item.id)}>Delete</button>
                             </td>
                         </tr>
                     ))}
